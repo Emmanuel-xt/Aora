@@ -6,7 +6,7 @@ const index = () => {
   return (
     <View>
       <Text className='text-3xl'>index</Text>
-      <Text className="bg-black ">h</Text>
+      <Text className="bg-black text-right text-white">h</Text>
       <Link href='/profile'>Go to Profile</Link>
     </View>
   )

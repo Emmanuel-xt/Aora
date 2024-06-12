@@ -38,4 +38,4 @@ const RootLayout = () => {
 
 export default RootLayout
 
-const styles = StyleSheet.create({})
+// const styles = StyleSheet.create({})
