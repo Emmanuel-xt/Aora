@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { Slot, SplashScreen, Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
+import { NativeWindStyleSheet } from "nativewind";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,8 +35,12 @@ const RootLayout = () => {
       <Stack.Screen name='index' options={{headerShown : false}} />
     </Stack>
   )
-}
-
-export default RootLayout
+  }
+  
+  export default RootLayout
+  
+  NativeWindStyleSheet.setOutput({
+    default: "native",
+  });
 
 // const styles = StyleSheet.create({})
