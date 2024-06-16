@@ -5,15 +5,20 @@ import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { Link } from "expo-router";
+import { createUser } from "../../lib/appwrite";
 
-const SignIn = () => {
+const SignUp = () => {
   const [form, setform] = useState({
+    username : '',
     email: "",
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {};
+  const hsubmit = () => {
+    console.log('submitted')
+    createUser()
+  };
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
@@ -24,9 +29,16 @@ const SignIn = () => {
             className="w-[115px] h-[35px]"
           />
           <Text className="text-2xl text-white text-semibold mt-10 font-psemibold">
-            Log in to Aora
+            Sign Up to Aora
           </Text>
 
+          <FormField
+            title="Username"
+            value={form.username}
+            handleChangeText={(e) => setform({ ...form, email: e })}
+            otherStyles="mt-7"
+            keyboardType="email-address"
+          />
           <FormField
             title="Email"
             value={form.email}
@@ -38,21 +50,21 @@ const SignIn = () => {
             title="Password"
             value={form.password}
             handleChangeText={(e) => setform({ ...form, password: e })}
-            otherStyles="my-7"
+            otherStyles="mt-7"
           />
 
           <CustomButton
-            title="Sign In"
-            onPress={submit}
+            title="Sign Up"
+            onPress={hsubmit}
             isLoading={isSubmitting}
             containerStyles="mt-7"
           />
           <View className="justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
-              Don't have an account ?
+              Already have an accounnt
             </Text>
-            <Link href="/sign-up" className="text-lg font-psemibold text-secondary-100">
-              Sign Up
+            <Link href="/sign-in" className="text-lg font-psemibold text-secondary-100">
+              Sign In
             </Link>
           </View>
         </View>
@@ -61,4 +73,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
