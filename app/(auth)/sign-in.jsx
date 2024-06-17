@@ -1,10 +1,11 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { signIn } from "../../lib/appwrite";
 
 const SignIn = () => {
   const [form, setform] = useState({
@@ -13,8 +14,21 @@ const SignIn = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {};
-  return (
+  const submit = async () => {
+    console.log("submitted");
+    if (!form.email || !form.password) {
+      Alert.alert("Error => All fields are required");
+      }
+    Alert.alert('submitted');
+    try {
+      await signIn(form.email , form.password)
+      router.replace('/home')
+    } catch (error) {
+      Alert.alert(`Error ${error.message}`)
+    }finally{
+      setIsSubmitting(false)
+    }
+  };  return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
         <View className=" w-full min-h-[85vh] justify-center px-4 my-6">
@@ -30,20 +44,20 @@ const SignIn = () => {
           <FormField
             title="Email"
             value={form.email}
-            handleChangeText={(e) => setform({ ...form, email: e })}
+            handleChangeText={(e) => setform({ ...form, email: e.target.value })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
             title="Password"
             value={form.password}
-            handleChangeText={(e) => setform({ ...form, password: e })}
+            handleChangeText={(e) => setform({ ...form, password: e.target.value })}
             otherStyles="my-7"
           />
 
           <CustomButton
             title="Sign In"
-            onPress={submit}
+            handlePress={submit}
             isLoading={isSubmitting}
             containerStyles="mt-7"
           />
