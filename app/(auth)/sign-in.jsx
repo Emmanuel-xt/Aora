@@ -6,6 +6,7 @@ import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
 import { Link, router } from "expo-router";
 import { signIn } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
   const [form, setform] = useState({
@@ -13,6 +14,9 @@ const SignIn = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {setUser , setIsLoggedIn} = useGlobalContext()
+  // console.log('Is it Loading and logged in Values' , isLoading , isLoggedIn )
+
 
   const submit = async () => {
     console.log("submitted");
@@ -20,8 +24,11 @@ const SignIn = () => {
       Alert.alert("Error => All fields are required");
       }
     Alert.alert('submitted');
+    setIsSubmitting(true)
     try {
-      await signIn(form.email , form.password)
+      const result = await signIn(form.email , form.password)
+      setUser(result)
+      setIsLoggedIn(true)
       router.replace('/home')
     } catch (error) {
       Alert.alert(`Error ${error.message}`)
