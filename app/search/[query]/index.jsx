@@ -11,6 +11,7 @@ import { images } from "../../../constants";
 const search = () => {
   const { query } = useLocalSearchParams();
   const { data: posts, refetch } = useApprite(() => searchPosts(query));
+  console.log(`query= ${query} , post = ${posts}`)
   useEffect(() => {refetch()}, [query]);
   return (
     <SafeAreaView className="bg-primary h-full">
