@@ -1,47 +1,41 @@
-import { View, Text, SafeAreaView, FlatList, Image, RefreshControl, Alert } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  Image,
+  RefreshControl,
+  Alert,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { images } from "../../constants";
 import SearchInput from "../../components/SearchInput";
 import Trending from "../../components/Trending";
 import EmptyState from "../../components/EmptyState";
-import { getALlPosts } from "../../lib/appwrite";
+import { getALlPosts, getLatestPosts } from "../../lib/appwrite";
+import useApprite from "../../lib/useAppwrite";
+import VideoCard from "../../components/VideoCard";
 
 const Home = () => {
-  const [refreshing, setRefreshing] = useState(false)
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchData =async () => {
-      setIsLoading(true)
-        try {
-          const response = await getALlPosts()
-          console.log('response ==> ' , response)
-          setData(response)
-        } catch (error) {
-          Alert.alert('Error' , error.message)
-        }finally{
-          setIsLoading(false)
-        }
-    }
-    fetchData()
-
-  }, [])
-
-  console.log('Data ==> ' , data)
-  
-
+  const { data: posts, refetch } = useApprite(getALlPosts);
+  const { data: latest } = useApprite(getLatestPosts);
+  const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
-    setRefreshing(true)
-    setRefreshing(false)
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
-  }
   return (
     <SafeAreaView className="bg-primary h-full">
       <FlatList
-        // data={[{ id: 1 }, { id: 2 }]}
+        data={posts}
         keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => <Text className="text-3xl">{item.id}</Text>}
+        renderItem={({ item }) => (
+          <Text className="text-3xl text-white">
+            <VideoCard video={item}/>
+          </Text>
+        )}
         ListHeaderComponent={() => (
           <View className="my-6 px-4 space-y-6">
             <View className="justify-between items-start flex-row mb-6">
@@ -62,17 +56,23 @@ const Home = () => {
               </View>
             </View>
             <SearchInput />
-            <View className='w-full flex-1 pt-5 pb-8'>
-              <Text className='font-pregular text-lg text-gray-100 mb-3'>Laterst Videos</Text>
-              <Trending post={[{id:1} ,{id:2}, {id:3}] ?? []} />
-
+            <View className="w-full flex-1 pt-5 pb-8">
+              <Text className="font-pregular text-lg text-gray-100 mb-3">
+                Laterst Videos
+              </Text>
+              <Trending posts={latest} />
             </View>
           </View>
         )}
         ListEmptyComponent={() => (
-          <EmptyState title='No Videos found' subtitle='Be the fiirst to upload a video' />
+          <EmptyState
+            title="No Videos found"
+            subtitle="Be the fiirst to upload a video"
+          />
         )}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );
