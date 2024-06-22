@@ -15,8 +15,11 @@ import EmptyState from "../../components/EmptyState";
 import { getALlPosts, getLatestPosts } from "../../lib/appwrite";
 import useApprite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
+  console.log('user', user)
   const { data: posts, refetch } = useApprite(getALlPosts);
   const { data: latest } = useApprite(getLatestPosts);
   const [refreshing, setRefreshing] = useState(false);
@@ -44,7 +47,7 @@ const Home = () => {
                   Welcome Back
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
-                  Emma-Js
+                  {user?.userId}
                 </Text>
               </View>
               <View className="mt-1.5">
