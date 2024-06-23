@@ -12,10 +12,13 @@ import FormField from "../../components/FormField";
 import { ResizeMode, Video } from "expo-av";
 import { icons } from "../../constants";
 import CustomButton from "../../components/CustomButton";
-import * as Document from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
+import { createVideo } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Create = () => {
+  const { user } = useGlobalContext();
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -24,11 +27,14 @@ const Create = () => {
     thumnail: "",
   });
   const openPicker = async (selectType) => {
-    const result = await Document.getDocumentAsync({
-      type:
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes:
         selectType === "image"
-          ? ["image/png ,", "image/jpg"]
-          : ["video/mp4", "video/gif"],
+          ? ImagePicker.MediaTypeOptions.Images
+          : ImagePicker.MediaTypeOptions.Videos,
+      // allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
     if (!result.canceled) {
       if (selectType == "image") {
@@ -37,25 +43,30 @@ const Create = () => {
       if (selectType == "video") {
         setForm({ ...form, video: result.assets[0] });
       }
-    } else {
-      setTimeout(() => {
-        Alert.alert("Document Picked ", JSON.stringify(result, null, 2));
-      }, 100);
     }
+    // else {
+    //   setTimeout(() => {
+    //     Alert.alert("Document Picked ", JSON.stringify(result, null, 2));
+    //   }, 100);
+    // }
   };
-  const submit = () => {
-    if(!form.prompt || !form.thumnail || !form.title || !form.video){
-      return Alert.alert('ALl fields are required')
+  const submit = async () => {
+    if (!form.prompt || !form.thumnail || !form.title || !form.video) {
+      return Alert.alert("ALl fields are required");
     }
-    setUploading(true)
+    setUploading(true);
 
     try {
-      Alert.alert('Success')
-      router.push('/home')
+      await createVideo({
+        ...form,
+        userId: user.$id,
+      });
+      Alert.alert("Success");
+      router.push("/home");
     } catch (error) {
-      Alert.alert("Error" , error.message)
-    }finally{
-      setUploading(false)
+      Alert.alert("Error", error.message);
+    } finally {
+      setUploading(false);
     }
   };
   return (
@@ -80,9 +91,9 @@ const Create = () => {
               <Video
                 source={{ uri: form.video.uri }}
                 className="w-full h-64 rounded-2xl "
-                useNativeControls
+                // useNativeControls
                 resizeMode={ResizeMode.CONTAIN}
-                isLooping
+                // isLooping
               />
             ) : (
               <View className="w-full h-40 px-4 bg-black-100 rounded-2xl justify-center items-center">
