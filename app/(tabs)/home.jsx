@@ -19,7 +19,7 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
-  console.log('user', user.username)
+  console.log('user', user?.username)
   const { data: posts, refetch } = useApprite(getALlPosts);
   const { data: latest } = useApprite(getLatestPosts);
   const [refreshing, setRefreshing] = useState(false);
