@@ -23,16 +23,18 @@ const SignIn = () => {
     if (!form.email || !form.password) {
       Alert.alert("Error => All fields are required");
       }
-    Alert.alert('submitted');
+    // Alert.alert('submitted');
     setIsSubmitting(true)
     try {
       const result = await signIn(form.email , form.password)
+      Alert.alert('logged in succesfully')
       setUser(result)
       setIsLoggedIn(true)
       router.replace('/home')
     } catch (error) {
-      Alert.alert(`Error ${error.message}`)
+      Alert.alert(`Error` , error.message, 'j' )
     }finally{
+      Alert.alert('finally')
       setIsSubmitting(false)
     }
   };  return (
@@ -51,14 +53,14 @@ const SignIn = () => {
           <FormField
             title="Email"
             value={form.email}
-            handleChangeText={(e) => setform({ ...form, email: e.target.value })}
+            handleChangeText={(e) => setform({ ...form, email: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
           />
           <FormField
             title="Password"
             value={form.password}
-            handleChangeText={(e) => setform({ ...form, password: e.target.value })}
+            handleChangeText={(e) => setform({ ...form, password: e })}
             otherStyles="my-7"
           />
 

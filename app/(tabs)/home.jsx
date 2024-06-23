@@ -19,7 +19,7 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Home = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
-  console.log('user', user)
+  console.log('user', user.username)
   const { data: posts, refetch } = useApprite(getALlPosts);
   const { data: latest } = useApprite(getLatestPosts);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,12 +35,12 @@ const Home = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <Text className="text-3xl text-white">
+          // <Text className="text-3xl text-white border border-blue-400">
             <VideoCard video={item}/>
-          </Text>
+          // </Text>
         )}
         ListHeaderComponent={() => (
-          <View className="my-6 px-4 space-y-6">
+          <View className="my-6 px-4 space-y-6 border border-white">
             <View className="justify-between items-start flex-row mb-6">
               <View>
                 <Text className="font-medium text-sm text-gray-100">
